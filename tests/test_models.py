@@ -4,8 +4,19 @@ import numpy as np
 import numpy.testing as npt
 from unittest.mock import patch
 import pytest
+from unittest.mock import Mock 
+from unittest.mock import patch
 
-np.errstate
+@patch('inflammation.models.get_data_dir', return_value='/data_dir')
+def test_load_csv(mock_get_data_dir):
+   from inflammation.models import load_csv
+   with patch('numpy.loadtxt') as mock_loadtxt:
+       load_csv('test.csv')
+       name, args, kwargs = mock_loadtxt.mock_calls[0]
+       assert kwargs['fname'] == '/data_dir/test.csv'
+       load_csv('/test.csv')
+       name, args, kwargs = mock_loadtxt.mock_calls[1]
+       assert kwargs['fname'] == '/test.csv'
 
 @pytest.mark.parametrize(
     "test, expected",
